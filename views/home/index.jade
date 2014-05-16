@@ -1,11 +1,9 @@
 extends ../layout
-
-block styles
-
-  //if IE 7
-    style.
-      .getting-started li{overflow:visible;clear:both}.delete{width:690px}
-
 block body
-  form
-    input(name='asd')
+  div(ng-controller='SiteCtrl')
+    form(ng-submit='addSite()')
+      input(ng-model='site.name')
+    div(ng-repeat='site in sites track by $index')
+      span(contenteditable='true' ng-keyup='updateSite($event, site)')
+        {{site.name}}
+      button(ng-click='removeSite(site)') Remove
