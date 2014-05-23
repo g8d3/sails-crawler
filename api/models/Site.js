@@ -13,7 +13,9 @@ module.exports = {
   	/* e.g.
   	nickname: 'string'
   	*/
-    
+    name: 'string',
+    crawlRules: 'array',
+    notCrawlRules: 'array'
   }
 
 };

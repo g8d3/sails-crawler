@@ -18,6 +18,8 @@
 
   socket.on('connect', function socketConnected() {
 
+    //angularSails(crawler, socket);
+
     // Listen for Comet messages from Sails
     socket.on('message', function messageReceived(message) {
 
@@ -29,6 +31,7 @@
       log('New comet message received :: ', message);
       //////////////////////////////////////////////////////
 
+      
     });
 
 

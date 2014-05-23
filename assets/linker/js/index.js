@@ -1,16 +1,23 @@
 crawler = angular.module('crawler', []);
 
-crawler.controller('SiteCtrl',['$scope', '$http', function($scope, $http){
-  $scope.site = {};
+crawler.factory('siteFactory', function(){
+  return {
+    get: function(callback){ socket.get('/site', callback); }
+  };
+});
 
-  $http.get('/site').success(function(sites) {
+crawler.controller('SiteCtrl',['$scope', 'siteFactory', function($scope, siteFactory){
+  $scope.newSite = {};
+
+  siteFactory.get(function(sites) {
     $scope.sites = sites;
+    $scope.$apply();
   });
 
   $scope.addSite = function(){
-    socket.post('/site', $scope.site, function(savedSite){
+    socket.post('/site', $scope.newSite, function(savedSite){
       $scope.sites.push(savedSite);
-      $scope.site = {};
+      $scope.newSite = {};
       $scope.$apply();
     })
   };
@@ -26,7 +33,13 @@ crawler.controller('SiteCtrl',['$scope', '$http', function($scope, $http){
 
   $scope.updateSite = function($event, site){
     var index = $scope.sites.indexOf(site);
-    site.name = $event.target.innerHTML;
+    console.log('args')
+    console.log(this)
+    console.log(arguments)
+    window.x = this
+    window.y = arguments
+    console.log('args')
+    site.name = $event.target.value;
     socket.put('/site/' + site.id, site, function(){
       $scope.sites[index].name = site.name;
       $scope.$apply();
@@ -34,5 +47,20 @@ crawler.controller('SiteCtrl',['$scope', '$http', function($scope, $http){
 
   };
 
+  $scope._openSite = {};
+  $scope.openSite = function(site){
+    $scope._openSite = site;
+  };
+
+  $scope.crawl = function($event, rule){
+    var site = $scope._openSite;
+    var index = site.crawlRules.indexOf(rule);
+    site.crawlRules[index] = $event.target.innerHTML;
+
+    socket.put('/site/' + site.id, site, function(){
+      $scope.$apply();
+    });
+
+  };
 }]);
 

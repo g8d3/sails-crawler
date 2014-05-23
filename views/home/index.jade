@@ -1,9 +1,16 @@
 extends ../layout
 block body
   div(ng-controller='SiteCtrl')
-    form(ng-submit='addSite()')
-      input(ng-model='site.name')
-    div(ng-repeat='site in sites track by $index')
-      span(contenteditable='true' ng-keyup='updateSite($event, site)')
-        {{site.name}}
-      button(ng-click='removeSite(site)') Remove
+    div
+      form(ng-submit='addSite()')
+        input(ng-model='newSite.name')
+      div(ng-repeat='site in sites track by $index')
+        input(ng-click='openSite(site)' ng-keyup='updateSite($event, site)' ng-model='site.name')
+        button(ng-click='removeSite(site)') Remove
+    h1 Include
+    div(ng-repeat='rule in _openSite.crawlRules')
+      input(ng-keyup='crawl($event, rule)' ng-model='rule')
+    h1 Ignore
+    div(ng-repeat='rule in _openSite.notCrawlRules')
+      input(ng-keyup='crawl($event, rule)' ng-model='rule')
+
