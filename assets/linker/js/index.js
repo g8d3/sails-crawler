@@ -1,20 +1,14 @@
 crawler = angular.module('crawler', []);
 
-crawler.factory('siteFactory', function(){
-  return {
-    get: function(callback){ socket.get('/site', callback); }
-  };
-});
-
-crawler.controller('SiteCtrl',['$scope', 'siteFactory', function($scope, siteFactory){
+crawler.controller('SiteCtrl',['$scope',  function($scope){
   $scope.newSite = {};
 
-  siteFactory.get(function(sites) {
+  socket.get('/site', function(sites) {
     $scope.sites = sites;
     $scope.$apply();
   });
 
-  $scope.addSite = function(){
+  $scope.add = function(site){
     socket.post('/site', $scope.newSite, function(savedSite){
       $scope.sites.push(savedSite);
       $scope.newSite = {};
@@ -22,7 +16,7 @@ crawler.controller('SiteCtrl',['$scope', 'siteFactory', function($scope, siteFac
     })
   };
 
-  $scope.removeSite = function(site){
+  $scope.remove = function(site){
     var index = $scope.sites.indexOf(site);
 
     socket.delete('/site/' + site.id, function(response){
@@ -31,15 +25,9 @@ crawler.controller('SiteCtrl',['$scope', 'siteFactory', function($scope, siteFac
     });
   };
 
-  $scope.updateSite = function($event, site){
+  $scope.update = function(site){
     var index = $scope.sites.indexOf(site);
-    console.log('args')
-    console.log(this)
-    console.log(arguments)
-    window.x = this
-    window.y = arguments
-    console.log('args')
-    site.name = $event.target.value;
+
     socket.put('/site/' + site.id, site, function(){
       $scope.sites[index].name = site.name;
       $scope.$apply();
@@ -47,20 +35,13 @@ crawler.controller('SiteCtrl',['$scope', 'siteFactory', function($scope, siteFac
 
   };
 
-  $scope._openSite = {};
-  $scope.openSite = function(site){
-    $scope._openSite = site;
+  $scope._open = {};
+  $scope.open = function(site){
+    $scope._open = site;
   };
 
-  $scope.crawl = function($event, rule){
-    var site = $scope._openSite;
-    var index = site.crawlRules.indexOf(rule);
-    site.crawlRules[index] = $event.target.innerHTML;
-
-    socket.put('/site/' + site.id, site, function(){
-      $scope.$apply();
-    });
-
-  };
+  $scope.asd = function(){
+    console.log('asd')
+  }
 }]);
 
